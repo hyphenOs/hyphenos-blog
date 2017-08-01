@@ -1,3 +1,6 @@
 [submodule "output"]
 	path = output
 	url = https://github.com/hyphenos/hyphenos.github.io
+[submodule "themes"]
+	path = themes
+	url = https://github.com/getpelican/pelican-themes
