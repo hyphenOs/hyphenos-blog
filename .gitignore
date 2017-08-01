@@ -1,0 +1,4 @@
+# Virtual Env - we certainly don't want to track it
+venv
+output
+*pyc
