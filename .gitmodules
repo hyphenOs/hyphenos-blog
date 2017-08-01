@@ -1,0 +1,3 @@
+[submodule "output"]
+	path = output
+	url = https://github.com/hyphenos/hyphenos.github.io
