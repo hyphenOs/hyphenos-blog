@@ -20,7 +20,7 @@ AUTHOR_FEED_ATOM = None
 AUTHOR_FEED_RSS = None
 
 # Blogroll
-LINKS = (('hyphenOs', 'https://hyphenos.io/'),)
+LINKS = (('hyphenOs{-Os}', 'https://hyphenos.io/'),)
 
 # Social widget
 SOCIAL = (('You can add links in your config file', '#'),
@@ -28,7 +28,7 @@ SOCIAL = (('You can add links in your config file', '#'),
 
 DEFAULT_PAGINATION = 10
 
-THEME = 'themes/Flex'
+THEME = 'themes/pelican-blue'
 
 # Uncomment following line if you want document-relative URLs when developing
 #RELATIVE_URLS = True
