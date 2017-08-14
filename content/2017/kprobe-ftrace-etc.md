@@ -1,7 +1,7 @@
 Title: On Ftrace, kprobes, tracepoints
 Date: 2017-08-02
 Tags: linux-kernel, tracing, bpf, ftrace
-Category:
+Category: Performance
 Slug: on-ftrace-kprobes-tracepoints.md
 Author: Abhijit Gadgil
 Summary: For a beginner, tracing infrastructure in Linux can be considerably confusing. It's easier to get lost while trying to figure out what exactly are tracing mechanisms, which ones should be used. Addition of new eBPF support for tracing has added more to it. This is just an attempt to compile what is my current understanding, with a slightly more bias towards what facilities eBPF provides, as this is the state of the art.

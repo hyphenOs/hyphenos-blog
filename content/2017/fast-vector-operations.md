@@ -1,7 +1,7 @@
 Title: So Vector Operations Are Fast, Right?
 Date: 2017-08-02
 Tags: pandas, numpy
-Category:
+Category: Performancee
 Slug: vector-operations-are-fast-right
 Author: Abhijit Gadgil
 Summary: Recently, I was looking at processing data from Pandas panel. I wanted to find out certain `items` in a Panel based on certain criteria on the `minor axis`. I worked with two flavors and the findings for different data-sets are quite interesting. Something that would definitely qualify as a learning.

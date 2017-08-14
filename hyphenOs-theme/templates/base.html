@@ -1,7 +1,30 @@
-{% extends "!simple/base.html" %}
 
-{% block head %}
-{{ super() }}
-   <link rel="stylesheet" type="text/css" href="{{ SITEURL }}/theme/css/style.css" />
+
+<html>
+{% block html %}
+
 {% endblock %}
+</html>
 
+<head>
+{% block head %}
+{% endblock %}
+	<link rel="stylesheet" type="text/css" href="{{ SITEURL }}/theme/css/style.css" />
+</head>
+<body class="home blog">
+	<header class="site-header">
+	{% block siteheader %}
+
+	{% endblock %}
+	</header>
+	<div class="main">
+	{% block sitecontent %}
+
+	{% endblock %}
+	</div>
+	<footer class="site-footer">
+	{% block sitefooter %}
+
+	{% endblock %}
+	</footer>
+</body>

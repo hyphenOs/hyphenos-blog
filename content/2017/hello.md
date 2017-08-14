@@ -4,7 +4,7 @@ Tags: pelican
 Category:
 Slug: hyphenos-hello-world
 Author: Abhijit Gadgil
-Summary: Pelican Powered blog
+Summary: Started hyphenOs blog on github pages, that is powered by Pelican. This articlue describes the setup.
 
 # Pelican Powered blog for hyphenOs
 

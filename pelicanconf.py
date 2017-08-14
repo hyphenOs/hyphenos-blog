@@ -28,8 +28,12 @@ SOCIAL = (('You can add links in your config file', '#'),
 
 DEFAULT_PAGINATION = 10
 
-#THEME = 'themes/pelican-blue'
-THEME = 'hyphenOs-theme'
+THEME = 'themes/pelican-bootstrap3'
+JINJA_ENVIRONMENT = {'extensions': ['jinja2.ext.i18n']}
+PLUGIN_PATHS = ['pelican-plugins', ]
+PLUGINS = ['i18n_subsites', ]
+
+#THEME = 'hyphenOs-theme'
 
 # Uncomment following line if you want document-relative URLs when developing
 #RELATIVE_URLS = True

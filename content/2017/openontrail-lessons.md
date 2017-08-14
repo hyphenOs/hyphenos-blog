@@ -1,7 +1,7 @@
 Title: Getting started with OpenContrail, Lessons Learned (Part 1)
 Date: 2017-08-02
-Tags: opencontrail, openstack
-Category: SDN, NFV
+Tags: opencontrail, openstack, SDN, NFV
+Category: Networking
 Slug: opencontrail-getting-started-lessons-1
 Author: Abhijit Gadgil
 Summary: OpenContrail provides right set of abstractions for VM and Container networking. However, if one is new to OpenContrail, getting started can be an uphill task. Documenting some of the lessons learned while trying to get started with OpenContrail.

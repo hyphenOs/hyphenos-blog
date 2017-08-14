@@ -1,3 +1,33 @@
+/* Starting with box-sizing taken from : https://css-tricks.com/inheriting-box-sizing-probably-slightly-better-best-practice/ */
+html {
+	box-sizing: border-box;
+}
+*, *::after, *::before {
+	box-sizing: inherit;
+}
+
+/* We can set height and width on these elements */
+article,aside,details,figcaption,figure,footer,header,hgroup,nav,section,summary {
+	display:block;
+}
+
+.site-header {
+	display: flex;
+}
+@media (max-width: 650px) {
+	.site-header {
+		display: none;
+	}
+}
+
+.main {
+	width: 100%;
+}
+
+.site-footer {
+	font-size: 10px;
+}
+
 body {
     font-family : monospace ;
     font-size : 100% ;
