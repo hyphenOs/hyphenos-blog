@@ -2,10 +2,10 @@
 # -*- coding: utf-8 -*- #
 from __future__ import unicode_literals
 
-AUTHOR = u'Abhijit Gadgil'
+AUTHOR = u'hyphenOs Software Labs. Pvt. Ltd.'
 SITENAME = u'hyphenOs {-Os} Blog'
 SITEURL = ''
-SITELOGO = u'/images/hyphenos.svg'
+SITELOGO = u'/images/hyphenos-white.svg'
 
 PATH = 'content'
 
@@ -21,7 +21,9 @@ AUTHOR_FEED_ATOM = None
 AUTHOR_FEED_RSS = None
 
 # Blogroll
-LINKS = (('hyphenOs{-Os}', 'https://hyphenos.io/'),)
+LINKS = (
+        ('hyphenOs Home', 'https://hyphenos.io/'),
+        )
 
 # Social widget
 SOCIAL = (
@@ -30,12 +32,6 @@ SOCIAL = (
 
 DEFAULT_PAGINATION = 10
 
-#THEME = 'themes/pelican-bootstrap3'
-#JINJA_ENVIRONMENT = {'extensions': ['jinja2.ext.i18n']}
-#PLUGIN_PATHS = ['pelican-plugins', ]
-#PLUGINS = ['i18n_subsites', ]
-
-#THEME = 'hyphenOs-theme'
 THEME = 'theme/Flex'
 
 PYGMENTS_STYLE = 'monokai'
