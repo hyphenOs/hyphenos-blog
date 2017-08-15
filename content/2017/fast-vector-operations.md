@@ -1,7 +1,7 @@
 Title: So Vector Operations Are Fast, Right?
 Date: 2017-08-02
 Tags: pandas, numpy
-Category: Performancee
+Category: Performance
 Slug: vector-operations-are-fast-right
 Author: Abhijit Gadgil
 Summary: Recently, I was looking at processing data from Pandas panel. I wanted to find out certain `items` in a Panel based on certain criteria on the `minor axis`. I worked with two flavors and the findings for different data-sets are quite interesting. Something that would definitely qualify as a learning.
@@ -102,7 +102,7 @@ Here are the actual Profiling outputs for run on 'small data'.
 
 For the List Comprehension method -
 
-```
+```bash
 0.729673147202
 734
          552007 function calls (533140 primitive calls) in 0.704 seconds
@@ -130,7 +130,7 @@ For the List Comprehension method -
 
 For the Vector method -
 
-```
+```bash
 0.0554749965668
 734
          7443 function calls (7341 primitive calls) in 0.026 seconds
@@ -170,7 +170,7 @@ Below is the profiling output on the actual data.
 
 For the List Comprehension method -
 
-```
+```bash
 1.5659070015
 689
          550855 function calls (532024 primitive calls) in 1.542 seconds
@@ -198,7 +198,7 @@ For the List Comprehension method -
 ```
 and for the Vector method -
 
-```
+```bash
 
 7.15247297287
 689

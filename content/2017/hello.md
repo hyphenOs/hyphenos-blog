@@ -1,12 +1,11 @@
-Title: Hello World!!
+Title: Hello Static Site Generator
 Date: 2017-08-03
 Tags: pelican
-Category:
 Slug: hyphenos-hello-world
 Author: Abhijit Gadgil
 Summary: Started hyphenOs blog on github pages, that is powered by Pelican. This articlue describes the setup.
 
-# Pelican Powered blog for hyphenOs
+## Pelican Powered blog for hyphenOs
 
 Traditionally, if one wanted to host a blog, one would typically be doing something like [Wordpress](https://wordpress.com/) or [Blogger](https://wordpress.com/). However writing blogs there is extremely inconvenient to say the list. Plus you want to version control your blog and so on. The solution to these problems is typically - the Static File Generators like [Jekyll](http://jekyllrb.com/) or [Pelican](https://blog.getpelican.com/). Well, there are a [number of those](https://www.staticgen.com/) if one thinks that the above choices are rather limited :-).
 
@@ -33,6 +32,7 @@ What we are essentially going to do is Output repository and Theme repository ar
 ## Initializing the Content
 
 Normally, in any Python project, I make use of `virtualenv`. This helps in more than one ways especially if you are working with many Python based projects simultaneously. Since Pelican is written in Python and we are going to make use of it to generate our site, as usual, I start with a `virtualenv`.
+
 1. `$virtualenv venv` and then
 2. `venv/bin/pip install pelican`. Since I am going to use Markdown, I also
 3. `venv/bin/pip install markdown`. After this

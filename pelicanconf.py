@@ -5,6 +5,7 @@ from __future__ import unicode_literals
 AUTHOR = u'Abhijit Gadgil'
 SITENAME = u'hyphenOs {-Os} Blog'
 SITEURL = ''
+SITELOGO = u'/images/hyphenos.svg'
 
 PATH = 'content'
 
@@ -23,17 +24,23 @@ AUTHOR_FEED_RSS = None
 LINKS = (('hyphenOs{-Os}', 'https://hyphenos.io/'),)
 
 # Social widget
-SOCIAL = (('You can add links in your config file', '#'),
-          ('Another social link', '#'),)
+SOCIAL = (
+        ('github', 'https://github.com/hyphenOs'),
+          )
 
 DEFAULT_PAGINATION = 10
 
-THEME = 'themes/pelican-bootstrap3'
-JINJA_ENVIRONMENT = {'extensions': ['jinja2.ext.i18n']}
-PLUGIN_PATHS = ['pelican-plugins', ]
-PLUGINS = ['i18n_subsites', ]
+#THEME = 'themes/pelican-bootstrap3'
+#JINJA_ENVIRONMENT = {'extensions': ['jinja2.ext.i18n']}
+#PLUGIN_PATHS = ['pelican-plugins', ]
+#PLUGINS = ['i18n_subsites', ]
 
 #THEME = 'hyphenOs-theme'
+THEME = 'theme/Flex'
+
+PYGMENTS_STYLE = 'monokai'
+
+STATIC_PATHS = ['images']
 
 # Uncomment following line if you want document-relative URLs when developing
 #RELATIVE_URLS = True

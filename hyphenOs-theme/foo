@@ -1,8 +1,0 @@
-    ├── author.html           // processed for each author
-    ├── authors.html          // must list all the authors
-    ├── categories.html       // must list all the categories
-    ├── category.html         // processed for each category
-    ├── index.html            // the index (list all the articles)
-    ├── page.html             // processed for each page
-    ├── tag.html              // processed for each tag
-    └── tags.html             // must list all the tags. Can be a tag cloud.
