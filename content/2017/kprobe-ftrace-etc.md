@@ -10,13 +10,13 @@ Note: This is going to start more as a brain-dump and over a period of time, I a
 
 Most of the Linux dynamic tracing is built around the core support in kernel called `Ftrace`, this started as a function trace sub-system, but is considerably more involved now. All the major tools like [LTTng](), [SystemTap]() or the more recent [BCC]() make use of this infrastructure and then build upon it. In fact some of the kernel developments like `kprobes` and `uprobes` were developed in SystemTap project.
 
-Found a [good presentation](http://events.linuxfoundation.org/images/stories/pdf/lceu2012_zannoni.pdf), that provides a historical perspective of how many of these projects are started. I have also created a [clipboard](https://www.slideshare.net/gabhijit1/clipboards/linux-tracing), that give a timeline of Linux tracing and evolution of BPF support. Ths helped me understand why some of the utilities in `bcc` won't run on my Ubuntu 16.04 system.
+Found a [good presentation](http://events.linuxfoundation.org/images/stories/pdf/lceu2012_zannoni.pdf), that provides a historical perspective of how many of these projects are started. I have also created a [clipboard](https://www.slideshare.net/gabhijit1/clipboards/linux-tracing), that give a timeline of Linux tracing and evolution of BPF support. This helped me understand why some of the utilities in `bcc` won't run on my Ubuntu 16.04 system.
 
 Arguably one of the best (if not the best) resource about Linux tracing is [Brendan Gregg's Blog](http://www.brendangregg.com/).
 
 Coming back to specifics - it is possible to 'trace' following -
 
-1. A vast majority of kernel functions - those availabble inside `/sys/kernel/debug/tracing/available_filter_functions`. (This assumes you have mounted the `tracefs` in more recent kernels (and `debugfs` in slightly older kernels) on the `/sys/kernel/debug/tracing` path. It's possible to trace only a subset of those functions or functions belonging to a particular subsystem like say `net` etc. Kernel's documentation is a good starting point inside `Documentation/trace/ftrace.txt' and a few other files.
+1. A vast majority of kernel functions - those available inside `/sys/kernel/debug/tracing/available_filter_functions`. (This assumes you have mounted the `tracefs` in more recent kernels (and `debugfs` in slightly older kernels) on the `/sys/kernel/debug/tracing` path. It's possible to trace only a subset of those functions or functions belonging to a particular subsystem like say `net` etc. Kernel's documentation is a good starting point inside `Documentation/trace/ftrace.txt' and a few other files.
 
 2. `kprobes` provided a mechanism to trace both `entry` and `exit` of a function. However the mechanism to do this was slightly involved, in the absence of integration with `ftrace` mechanism (basically a similar mechanism to trace functions above). However with `ftrace` support for `kprobes`, this has become very useful.
 

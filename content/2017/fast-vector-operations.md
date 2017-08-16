@@ -4,7 +4,7 @@ Tags: pandas, numpy
 Category: Performance
 Slug: vector-operations-are-fast-right
 Author: Abhijit Gadgil
-Summary: Recently, for one of the projects we are working on, I was looking at processing data from Pandas panel. I wanted to find out certain `items` in a Panel based on certain criteria on the `minor axis`. I worked with two flavors and the findings for different data-sets are quite interesting. Something that would definitely qualify as an interesting learning. We discuss, how profiling can be successfully used to explain certain Performance behvior, that often looks counter-intuitive.
+Summary: Recently, for one of the projects we are working on, I was looking at processing data from Pandas panel. I wanted to find out certain `items` in a Panel based on certain criteria on the `minor axis`. I worked with two flavors and the findings for different data-sets are quite interesting. Something that would definitely qualify as an interesting learning. We discuss, how profiling can be successfully used to explain certain Performance behavior, that often looks counter-intuitive.
 
 ### A bit of a background
 
@@ -21,9 +21,9 @@ The eventual goal is to develop a 'service' that can be offered to users.
 
 ### So coming to concrete problem
 
-We are mainly going to be cocerned about the *How* question here. We are going to make use of [pandas](http://pandas.pydata.org/) features to achieve the stuff we are trying to arrive. So at a high level, the idea is - A pandas `Panel` that has got a list of 'stocks' as `items` and we have each `item` which has historical data as a `DataFrame` with date as `index` and 'OHLC' as columns. Since our focus is not on so much on *What* questions to ask, we will take a simple criterion which is stock having a positive close ie. last close is higher than previous close. ie. to put simplistically - `DataFrame.iloc[-1] > DataFraome.iloc[-2]`.
+We are mainly going to be concerned about the *How* question here. We are going to make use of [pandas](http://pandas.pydata.org/) features to achieve the stuff we are trying to arrive. So at a high level, the idea is - A pandas `Panel` that has got a list of 'stocks' as `items` and we have each `item` which has historical data as a `DataFrame` with date as `index` and 'OHLC' as columns. Since our focus is not on so much on *What* questions to ask, we will take a simple criterion which is stock having a positive close ie. last close is higher than previous close. ie. to put simplistically - `DataFrame.iloc[-1] > DataFraome.iloc[-2]`.
 
-The first solution that I came up with based on List Comprehensins -
+The first solution that I came up with based on List Comprehension -
 
 ```python
 pan = pd.Panel(scripdata_dict)
@@ -225,9 +225,9 @@ and for the Vector method -
 
 ```
 
-Eureka! The `transpose` function has become extremely expensive for this big data. Note, the number of funtion calls is still about the same, about 7000 vs. 500000, but at-least some of the functions have become exensive and interestingly the total cost was actually growing sub-linearly for the List Comprehension method.
+Eureka! The `transpose` function has become extremely expensive for this big data. Note, the number of function calls is still about the same, about 7000 vs. 500000, but at-least some of the functions have become expensive and interestingly the total cost was actually growing sub-linearly for the List Comprehension method.
 
-Now, when one looks at this data, it's clearly not that counter intuitive. We are doing a `memcpy` of a huge array in the `transpose` method and that's likely is a cause of real slowdown. While in the former case, there was still `memcpy`, but on a data that could probably fit easily in cache (or at-least was quite cache friendly) compared to this. A lesson from 'Networking Datapath 101' don't do `memcpy` in the fast path.
+Now, when one looks at this data, it's clearly not that counter intuitive. We are doing a `memcpy` of a huge array in the `transpose` method and that's likely is a cause of real slowdown. While in the former case, there was still `memcpy`, but on a data that could probably fit easily in cache (or at-least was quite cache friendly) compared to this. A lesson from 'networking data-path 101' don't do `memcpy` in the fast path.
 
 We need to still follow this line of thought and find out more about what's happening under the hood. Some of the things that are worth experimenting include -
 
@@ -237,7 +237,7 @@ We need to still follow this line of thought and find out more about what's happ
 
 Will write a follow up on this to actually find out what the findings above are.
 
-Few lessons learnt here -
+Few lessons learned here -
 
 * Just don't go by what theoretically makes sense. Know precisely what you are trying to do and what scale.
 * RTFM - because clearly [documentation on transpose](http://pandas.pydata.org/pandas-docs/version/0.20.3/generated/pandas.Panel.transpose.html) says, for Mixed-dtype data, will always result in a copy.
@@ -246,5 +246,5 @@ Few lessons learnt here -
 And a few collateral benefits -
 
 1. Had an actual use-case for studying `cProfile` rather than trying some simple 'hello world!' stuff.
-2. Learnt about a beautiful tool [gprof2dot](https://github.com/jrfonseca/gprof2dot), when trying to find out more about the actual call-graphs and find out the culprits. It's worth checking out.
+2. Learned about a beautiful tool [gprof2dot](https://github.com/jrfonseca/gprof2dot), when trying to find out more about the actual call-graphs and find out the culprits. It's worth checking out.
 

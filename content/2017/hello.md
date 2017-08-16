@@ -3,7 +3,7 @@ Date: 2017-08-03
 Tags: pelican
 Slug: hyphenos-hello-world
 Author: Abhijit Gadgil
-Summary: Started hyphenOs blog on github pages, that is powered by Pelican. This articlue describes the setup.
+Summary: Started hyphenOs blog on github pages, that is powered by Pelican. This article describes the setup.
 
 ## Pelican Powered blog for hyphenOs
 
@@ -13,7 +13,7 @@ Advantage of `Jekyll` is, it is natively supported by Github Pages thus making i
 
 For `hyphenOs` blog, I wanted to use pelican FWIW. A small issue with this is - since it's not natively supported by Github Pages, it's a bit of an issue to keep track of your posts and also making sure your generated output is pushed to a respective <foo>.github.io repository. So how does one go about it? We make interesting use of `git submodule` to achieve this. Note: what is described can as well work with gh-pages repo (or I hope so.).
 
-This approach is explained in a couple of [blog](http://railslide.io/pelican-github-pages.html) [posts](http://martinbrochhaus.com/pelican2.html) and I am pretty sure there are many more who go into a lot of details. What I am going to describe here is simply how to use `output` and `theme` directory as `git submodule`, so that everythng is version controlled.
+This approach is explained in a couple of [blog](http://railslide.io/pelican-github-pages.html) [posts](http://martinbrochhaus.com/pelican2.html) and I am pretty sure there are many more who go into a lot of details. What I am going to describe here is simply how to use `output` and `theme` directory as `git submodule`, so that everything is version controlled.
 
 We basically need three repositories here -
 
@@ -23,7 +23,7 @@ We basically need three repositories here -
 
 What we are essentially going to do is Output repository and Theme repository are going to be `git submodules` of our Content repository. So the work-flow becomes.
 
-* Init Content Repository (see below for more details).
+* Initialize Content Repository (see below for more details).
 * Add Output repository as `git submodule` (`git submodule add https://path-to-your.git output`)
 * Add Theme repository as `git submodule` (`git submodule add https://github.com/getpelican/pelican-themes themes`)
 * Add Content to your repository Using Markdown or RST or any Pelican supported Syntax.
