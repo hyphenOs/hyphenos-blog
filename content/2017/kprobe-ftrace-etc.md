@@ -1,5 +1,5 @@
 Title: On Ftrace, kprobes, tracepoints
-Date: 2017-08-02
+Date: 2017-08-09
 Tags: linux-kernel, tracing, bpf, ftrace
 Category: Performance
 Slug: on-ftrace-kprobes-tracepoints.md

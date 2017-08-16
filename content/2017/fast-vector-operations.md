@@ -1,22 +1,29 @@
 Title: So Vector Operations Are Fast, Right?
-Date: 2017-08-02
+Date: 2017-08-07
 Tags: pandas, numpy
 Category: Performance
 Slug: vector-operations-are-fast-right
 Author: Abhijit Gadgil
-Summary: Recently, I was looking at processing data from Pandas panel. I wanted to find out certain `items` in a Panel based on certain criteria on the `minor axis`. I worked with two flavors and the findings for different data-sets are quite interesting. Something that would definitely qualify as a learning.
+Summary: Recently, for one of the projects we are working on, I was looking at processing data from Pandas panel. I wanted to find out certain `items` in a Panel based on certain criteria on the `minor axis`. I worked with two flavors and the findings for different data-sets are quite interesting. Something that would definitely qualify as an interesting learning. We discuss, how profiling can be successfully used to explain certain Performance behvior, that often looks counter-intuitive.
 
 ### A bit of a background
 
-I am developing a system of processing historical NSE equities data, where I want to look at `interesting` historical observations to be able to look at a subset of `all` stocks that are traded on NSE. While what those 'interesting' observations would be is going to be a function of an investors methodology, but a tool that helps you look at historical data in 'interactive' time frames (typically under 10 seconds) is going to be very handy.
+One of the applications we are developing is a system of processing historical NSE equities data. What we are developing is a system, where, based on certain criteria relating to historical data of a stock or a set of stocks, one could narrow down the universe of stocks from 'all' stocks in NSE to a few that match certain criteria.
+Typically, such criteria will be input by a user as a query to filter stocks. eg. A user might want to query, stocks that are trading above 50 monthly EMA. A design goal of such this system is, one should be able to perform such filtering in 'interactive' time frames, typically not more than few seconds with a budget of not more than 20-30 seconds.
 
-Finally after nearly a few weeks of work, I managed to get a data that was in a form where I could do some experiments with this. The experiments are going to be along two axes - viz. from investment point of view (which the end users might be interested in) and from system point of view - to really answer the question in a reasonable manner - whether it will be really possible to make this available 'as a service' - more about that a bit later. Those curious about the code to download the data and process it can [check it out here](https://github.com/gabhijit/equities-data-utils)
+The challenges involved in developing such systems are manifold, if you don't use any public APIs like Quandle or Kite and rely entirely on NSE Bhavcopy data, you have to do a lot of heavy lifting yourself. After doing [considerable heavy lifting](https://github.com/gabhijit/tickpdownload), we started doing some experiments.
+The experiments will typically be of the following two kinds -
+
+1. *What* make good filtering criteria - This is what a lot of 'investors' would typically be interested.
+2. *How* do you solve the problems that meet the above design goals - viz. run-time queries (so you cannot pre-compute and store data) answered in 'interactive' time frames.
+
+The eventual goal is to develop a 'service' that can be offered to users.
 
 ### So coming to concrete problem
 
-I have a Pandas Panel that has got a list of 'stocks' as `items` and we have each `item` which has historical data as a data-frame with date as `index` and 'o,h,l,c' as columns. I wanted to filter based on simple criteria, say last 'close' is higher than previous 'close'.
+We are mainly going to be cocerned about the *How* question here. We are going to make use of [pandas](http://pandas.pydata.org/) features to achieve the stuff we are trying to arrive. So at a high level, the idea is - A pandas `Panel` that has got a list of 'stocks' as `items` and we have each `item` which has historical data as a `DataFrame` with date as `index` and 'OHLC' as columns. Since our focus is not on so much on *What* questions to ask, we will take a simple criterion which is stock having a positive close ie. last close is higher than previous close. ie. to put simplistically - `DataFrame.iloc[-1] > DataFraome.iloc[-2]`.
 
-One approach based on List Comprehensions is -
+The first solution that I came up with based on List Comprehensins -
 
 ```python
 pan = pd.Panel(scripdata_dict)
@@ -27,8 +34,7 @@ sels = [pan[x]['close'][-1] > pan[x]['close'][-2] for x in pan]
 
 ```
 
-This somehow wasn't looking quite 'elegant' and certainly didn't look in the spirit of Pandas. I was pretty sure, there would be a faster, 'Vector' way of doing this. It took me a bit of time to find that out eventually as I am not quie an expert in Pandas. But eventually after struggling a bit I stumbled upon the following solution, that did what I was looking for -
-
+However, after looking at this, it's clearly not a 'fast' 'vector' operation. So likely there's a faster way of doing this using 'vector' operations, after all that's what `numpy` and hence `pandas` is extremely good at. A following approach based on using `transpose` could be useful. I am not sure whether this is 'the fastest way' or there could be an even better way. But we'd continue exploring the following approach -
 
 ```python
 # Create a transpose of the Panel, now `items` become major axis.
@@ -42,13 +48,11 @@ pan11 = pan[cl2.index]
 
 ```
 
-This looked good, in theory and in practice too. I had a toy data that I was experimenting with just small data of 20 or so rows that helps you try out things without spending lot of time on loading data. And Voila, the second approach is about *20-40 times faster* than the first one. So the basic intuition is right, it's time to Declare Victory or Is it?.
+This looked clean. To test this, I had a toy data that I was experimenting with just small data of 20 or so rows (I often use such toy data when iterating over an approach, so that you don't end up spending a lot of time in loading the data itself.) Indeed, this approach is about *20-40 times faster*, based on some simple `time.time()` computation. So the basic intuition is right, it's indeed very fast or Is it?.
 
-Now somebody experienced with Pandas would have looked at it and asked 'How big is your data? Are you sure you want to do that? Did you RTFD?'.
+While, I have a reasonable working knowledge of `pandas`, I am far from an expert and have only some background in `numpy`. So I did not have an idea about how the particular pieces might be implemented (eg. `transpose` here.). Surely, basic test also suggests, it's worth a try. So now we take the code and run it against 'real data' - about 3000 (about 150 times original data) rows per `DataFrame` in a Panel, and the same code now runs about *3-4 times slower* than the first List Comprehension based approach. Oops! Seriously? First impression in such cases is something else must be wrong. So I started looking at explanations, while the former I was running on my desktop, dedicated CPU and the latter I was running on a VPS, could that be a problem? May be I should eliminate that variable first. So I tried the 'toy data' on the VPS, still the results are about the same. So clearly, something else is wrong.
 
-So now we take the code and run it against 'real data' - about 3000 or so rows per dataframe in a Panel, and the same code now runs about *3-4 times slower*. What? Seriously? First impression is something else must be wrong. So I start looking at excuses, while the former I was running on my desktop, dedicated CPU and the latter I was running on a VPS, could that be a problem? This was clearly not an Apples-to-Apples comparison. So then I experiment with this 'small data' on the VPS, still the results are about the same. So we can eliminate that as a problem. Clearly size wise, the first one was about 2-3MB and the latter one was about 700MB. Hint, somewhere the Cache effects are coming into play?
-
-The next quest was - how do I find out? My first (and quite wrong at that honestly) effort would be to use the `dtrace` support in Python and use some `perf` counters or tracing tools from the [bcc](https://github.com/iovisor/bcc) to find out. Thankfully, that support is not there in Python 2.7 I am havingon my Ubuntu machine. So what next? Let's run Python's native profilers and find out. Is the intuition even correct? So ran a simple profiling experiment by using the `cProfile` and `pstats`. The code looks like following - fairly straight forward.
+The next question was - how do I find out? My first (and quite wrong at that honestly) effort would be to use the `dtrace` support in Python and use some `perf` counters or tracing tools from the [bcc](https://github.com/iovisor/bcc) to find out. Incidentally, that support is not there in Python 2.7 I am having on my Ubuntu machine. So what next? Let's run Python's native profilers and find out. Is the intuition even correct? So ran a simple profiling experiment by using the `cProfile` and `pstats`. The code looks like following - fairly straight forward.
 
 For the 'Vector' method -
 
@@ -166,7 +170,7 @@ So the data also - justifies the basic intuition, in the case of 'vector' method
 
 So why is this so bad? Let's see what it looks like on the real data. Spoiler Alert: A good observer would have noticed that `'copy' method of 'numpy.ndarray' objects` already.
 
-Below is the profiling output on the actual data.
+Below is the profiling output on the actual data that is about 3000 rows in a DataFrame.
 
 For the List Comprehension method -
 
@@ -180,18 +184,18 @@ For the List Comprehension method -
 
    ncalls  tottime  percall  cumtime  percall filename:lineno(function)
      6276    0.038    0.000    1.008    0.000 /actual/path/to/data/equities-data-utils/venv/local/lib/python2.7/site-packages/pandas/core/generic.py:1640(_get_item_cache)
-     3138    0.032    0.000    0.806    0.000 /actual/path/to/data/gabhijit/equities-data-utils/venv/local/lib/python2.7/site-packages/pandas/core/panel.py:280(__getitem__)
-     3138    0.008    0.000    0.736    0.000 /actual/path/to/data/gabhijit/equities-data-utils/venv/local/lib/python2.7/site-packages/pandas/core/generic.py:1637(__getitem__)
-     1569    0.014    0.000    0.635    0.000 /actual/path/to/data/gabhijit/equities-data-utils/venv/local/lib/python2.7/site-packages/pandas/core/panel.py:558(_box_item_values)
-     1569    0.022    0.000    0.564    0.000 /actual/path/to/data/gabhijit/equities-data-utils/venv/local/lib/python2.7/site-packages/pandas/core/frame.py:261(__init__)
-     1569    0.025    0.000    0.527    0.000 /actual/path/to/data/gabhijit/equities-data-utils/venv/local/lib/python2.7/site-packages/pandas/core/frame.py:413(_init_ndarray)
-     1569    0.020    0.000    0.402    0.000 /actual/path/to/data/gabhijit/equities-data-utils/venv/local/lib/python2.7/site-packages/pandas/core/internals.py:4283(create_block_manager_from_blocks)
-     3138    0.017    0.000    0.397    0.000 /actual/path/to/data/gabhijit/equities-data-utils/venv/local/lib/python2.7/site-packages/pandas/core/series.py:598(__getitem__)
-     3138    0.027    0.000    0.368    0.000 /actual/path/to/data/gabhijit/equities-data-utils/venv/local/lib/python2.7/site-packages/pandas/core/indexes/datetimes.py:1358(get_value)
-     3138    0.024    0.000    0.340    0.000 /actual/path/to/data/gabhijit/equities-data-utils/venv/local/lib/python2.7/site-packages/pandas/core/frame.py:1940(__getitem__)
-     3138    0.057    0.000    0.323    0.000 /actual/path/to/data/gabhijit/equities-data-utils/venv/local/lib/python2.7/site-packages/pandas/core/indexes/base.py:2454(get_value)
-     3138    0.008    0.000    0.288    0.000 /actual/path/to/data/gabhijit/equities-data-utils/venv/local/lib/python2.7/site-packages/pandas/core/frame.py:1966(_getitem_column)
-     1569    0.019    0.000    0.284    0.000 /actual/path/to/data/gabhijit/equities-data-utils/venv/local/lib/python2.7/site-packages/pandas/core/internals.py:2779(__init__)
+     3138    0.032    0.000    0.806    0.000 /actual/path/to/data/equities-data-utils/venv/local/lib/python2.7/site-packages/pandas/core/panel.py:280(__getitem__)
+     3138    0.008    0.000    0.736    0.000 /actual/path/to/data/equities-data-utils/venv/local/lib/python2.7/site-packages/pandas/core/generic.py:1637(__getitem__)
+     1569    0.014    0.000    0.635    0.000 /actual/path/to/data/equities-data-utils/venv/local/lib/python2.7/site-packages/pandas/core/panel.py:558(_box_item_values)
+     1569    0.022    0.000    0.564    0.000 /actual/path/to/data/equities-data-utils/venv/local/lib/python2.7/site-packages/pandas/core/frame.py:261(__init__)
+     1569    0.025    0.000    0.527    0.000 /actual/path/to/data/equities-data-utils/venv/local/lib/python2.7/site-packages/pandas/core/frame.py:413(_init_ndarray)
+     1569    0.020    0.000    0.402    0.000 /actual/path/to/data/equities-data-utils/venv/local/lib/python2.7/site-packages/pandas/core/internals.py:4283(create_block_manager_from_blocks)
+     3138    0.017    0.000    0.397    0.000 /actual/path/to/data/equities-data-utils/venv/local/lib/python2.7/site-packages/pandas/core/series.py:598(__getitem__)
+     3138    0.027    0.000    0.368    0.000 /actual/path/to/data/equities-data-utils/venv/local/lib/python2.7/site-packages/pandas/core/indexes/datetimes.py:1358(get_value)
+     3138    0.024    0.000    0.340    0.000 /actual/path/to/data/equities-data-utils/venv/local/lib/python2.7/site-packages/pandas/core/frame.py:1940(__getitem__)
+     3138    0.057    0.000    0.323    0.000 /actual/path/to/data/equities-data-utils/venv/local/lib/python2.7/site-packages/pandas/core/indexes/base.py:2454(get_value)
+     3138    0.008    0.000    0.288    0.000 /actual/path/to/data/equities-data-utils/venv/local/lib/python2.7/site-packages/pandas/core/frame.py:1966(_getitem_column)
+     1569    0.019    0.000    0.284    0.000 /actual/path/to/data/equities-data-utils/venv/local/lib/python2.7/site-packages/pandas/core/internals.py:2779(__init__)
 
 
 
@@ -208,36 +212,34 @@ and for the Vector method -
    List reduced from 447 to 45 due to restriction <0.1>
 
    ncalls  tottime  percall  cumtime  percall filename:lineno(function)
-        1    0.000    0.000    5.000    5.000 /home/gabhijit/equities-data-utils/venv/local/lib/python2.7/site-packages/pandas/core/panel.py:1202(transpose)
-        1    0.349    0.349    5.000    5.000 /home/gabhijit/equities-data-utils/venv/local/lib/python2.7/site-packages/pandas/core/generic.py:496(transpose)
-        1    0.000    0.000    2.863    2.863 /home/gabhijit/equities-data-utils/venv/local/lib/python2.7/site-packages/pandas/core/generic.py:3256(values)
-        1    0.000    0.000    2.863    2.863 /home/gabhijit/equities-data-utils/venv/local/lib/python2.7/site-packages/pandas/core/panel.py:462(as_matrix)
-        1    0.000    0.000    2.863    2.863 /home/gabhijit/equities-data-utils/venv/local/lib/python2.7/site-packages/pandas/core/internals.py:3438(as_matrix)
-        1    0.644    0.644    2.863    2.863 /home/gabhijit/equities-data-utils/venv/local/lib/python2.7/site-packages/pandas/core/internals.py:3452(_interleave)
-        2    0.000    0.000    2.040    1.020 /home/gabhijit/equities-data-utils/venv/local/lib/python2.7/site-packages/pandas/core/panel.py:280(__getitem__)
-        2    0.000    0.000    1.818    0.909 /home/gabhijit/equities-data-utils/venv/local/lib/python2.7/site-packages/pandas/core/internals.py:160(get_values)
+        1    0.000    0.000    5.000    5.000 /path/to/data/equities-data-utils/venv/local/lib/python2.7/site-packages/pandas/core/panel.py:1202(transpose)
+        1    0.349    0.349    5.000    5.000 /path/to/data/equities-data-utils/venv/local/lib/python2.7/site-packages/pandas/core/generic.py:496(transpose)
+        1    0.000    0.000    2.863    2.863 /path/to/data/equities-data-utils/venv/local/lib/python2.7/site-packages/pandas/core/generic.py:3256(values)
+        1    0.000    0.000    2.863    2.863 /path/to/data/equities-data-utils/venv/local/lib/python2.7/site-packages/pandas/core/panel.py:462(as_matrix)
+        1    0.000    0.000    2.863    2.863 /path/to/data/equities-data-utils/venv/local/lib/python2.7/site-packages/pandas/core/internals.py:3438(as_matrix)
+        1    0.644    0.644    2.863    2.863 /path/to/data/equities-data-utils/venv/local/lib/python2.7/site-packages/pandas/core/internals.py:3452(_interleave)
+        2    0.000    0.000    2.040    1.020 /path/to/data/equities-data-utils/venv/local/lib/python2.7/site-packages/pandas/core/panel.py:280(__getitem__)
+        2    0.000    0.000    1.818    0.909 /path/to/data/equities-data-utils/venv/local/lib/python2.7/site-packages/pandas/core/internals.py:160(get_values)
         4    1.818    0.454    1.818    0.454 {method 'astype' of 'numpy.ndarray' objects}
         1    1.787    1.787    1.787    1.787 {method 'copy' of 'numpy.ndarray' objects}
-
 
 ```
 
 Eureka! The `transpose` function has become extremely expensive for this big data. Note, the number of funtion calls is still about the same, about 7000 vs. 500000, but at-least some of the functions have become exensive and interestingly the total cost was actually growing sub-linearly for the List Comprehension method.
 
-Now, when one looks at this data, it's clearly not that counter intuitive. We are doing a `memcpy` of a huge array in the `transpose` method and that's likely is a cause of real slowdown. While in the former case, there was still `memcpy`, but on a data that could probably fit easily in cache (or at-least was quite cache friendly) compared to this. Didn't they tell in networking don't do `memcpy` in the fast path?
+Now, when one looks at this data, it's clearly not that counter intuitive. We are doing a `memcpy` of a huge array in the `transpose` method and that's likely is a cause of real slowdown. While in the former case, there was still `memcpy`, but on a data that could probably fit easily in cache (or at-least was quite cache friendly) compared to this. A lesson from 'Networking Datapath 101' don't do `memcpy` in the fast path.
 
 We need to still follow this line of thought and find out more about what's happening under the hood. Some of the things that are worth experimenting include -
 
 1. double the data size and compute the fraction of time spent in `transpose` for every doubling and expect to see a knee somewhere.
 2. Does that make sense with the cache size on my computer?
-3. Indeed look at the `perf` counters and see some cache statistics.
+3. Indeed look at the `perf` counters and see cache statistics.
 
 Will write a follow up on this to actually find out what the findings above are.
 
 Few lessons learnt here -
 
 * Just don't go by what theoretically makes sense. Know precisely what you are trying to do and what scale.
-* Simply - going by 'Vector Operations are Fast' so always use them, may not be the wisest choice.
 * RTFM - because clearly [documentation on transpose](http://pandas.pydata.org/pandas-docs/version/0.20.3/generated/pandas.Panel.transpose.html) says, for Mixed-dtype data, will always result in a copy.
 * Sometimes not having an expert around is not a bad idea, because you develop better understanding by making mistakes.
 

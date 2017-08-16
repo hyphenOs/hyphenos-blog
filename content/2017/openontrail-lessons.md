@@ -1,5 +1,5 @@
 Title: Getting started with OpenContrail, Lessons Learned (Part 1)
-Date: 2017-08-02
+Date: 2017-08-04
 Tags: opencontrail, openstack, SDN, NFV
 Category: Networking
 Slug: opencontrail-getting-started-lessons-1
@@ -40,7 +40,7 @@ So I decided upon a following broad approach -
 
 This looked like a viable approach and I started making some progress. Something worth mentioning here, I wanted to start with building something bare minimum and then build more once I get comfortable with what is getting built and I am able to try at-least some of the things that get built. There's a bit of quirk worth mentioning here, OpenContrail uses a lot of old versions of third party software that is not distributed as a package (either by OpenContrail or officially by Ubuntu/Redhat etc.) Some of the software versions are so old - nearly three years and patches for those versions. It was perhaps easier to have got those changes merged into upstream, so that this quirk could be avoided, unfortunately that doesn't look like the case as of now. One has to leave with 'source downloading' and sometimes 'patching' these third party modules. The patches required for patching some of these `third-party` modules are available from a repository [third-party](). Instead of downloading everything in one go, I decided to do one at a time - something like
 
-```
+```bash
 while ! success:
     scons
     if failed:

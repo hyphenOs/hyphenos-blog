@@ -24,8 +24,8 @@ We basically need three repositories here -
 What we are essentially going to do is Output repository and Theme repository are going to be `git submodules` of our Content repository. So the work-flow becomes.
 
 * Init Content Repository (see below for more details).
-* Add Output repository as `git submodule`. `git submodule add https://path-to-your.git output`
-* Add Theme repository as `git submodule`. `git submodule add https://github.com/getpelican/pelican-themes theme`
+* Add Output repository as `git submodule` (`git submodule add https://path-to-your.git output`)
+* Add Theme repository as `git submodule` (`git submodule add https://github.com/getpelican/pelican-themes themes`)
 * Add Content to your repository Using Markdown or RST or any Pelican supported Syntax.
 * Run `make`. (Wow!)
 
@@ -39,7 +39,13 @@ Normally, in any Python project, I make use of `virtualenv`. This helps in more 
 4. Run `venv/bin/pelican-generator` utility to set blog wide defaults (be sure to create a `Makefile`, it's very convenient.).
 5. Next we should edit the `Makefile` to point to correct Python and Pelican executables. Change `PY?=python` to `PY?=venv/bin/python` and similarly for `PELICAN?=pelican` to `PELICAN?=venv/bin/pelican` in the Makefile.
 6. Start writing stuff.
+7. When done simply do a `make html` and then finally.
+8. `git push` the 'output' directory where the blogs are generated.
 
 ## Changing Theme
 
 In order to use the non-standard theme, one downloaded from the Themes repository above, one can simply add a variable like `THEME = themes/Flex` to `pelicanconf.py` file. To be able to use this - you have to do `git submodule update --remote --recursive` inside the `themes/Flex` directory, since that itself is a `git submodule`. Since I am not interested in all the themes now, I am not doing a `git submodule init` here. Instead I am just taking whatever I am interested in.
+
+## Conclusion
+
+This is a very easy way of maintaining your blog in a git repo.
