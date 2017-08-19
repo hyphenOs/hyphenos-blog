@@ -11,7 +11,7 @@ Summary: Recently, for one of the projects we are working on, I was looking at p
 One of the applications we are developing is a system of processing historical NSE equities data. What we are developing is a system, where, based on certain criteria relating to historical data of a stock or a set of stocks, one could narrow down the universe of stocks from 'all' stocks in NSE to a few that match certain criteria.
 Typically, such criteria will be input by a user as a query to filter stocks. eg. A user might want to query, stocks that are trading above 50 monthly EMA. A design goal of such this system is, one should be able to perform such filtering in 'interactive' time frames, typically not more than few seconds with a budget of not more than 20-30 seconds.
 
-The challenges involved in developing such systems are manifold, if you don't use any public APIs like Quandle or Kite and rely entirely on NSE Bhavcopy data, you have to do a lot of heavy lifting yourself. After doing [considerable heavy lifting](https://github.com/gabhijit/tickpdownload), we started doing some experiments.
+The challenges involved in developing such systems are manifold, if you don't use any public APIs like [Quandl](https://www.quandl.com/) or [Kite](https://kite.zerodha.com/) and rely entirely on NSE Bhavcopy data, you have to do a lot of heavy lifting yourself. After doing [considerable heavy lifting](https://github.com/gabhijit/tickpdownload), we started doing some experiments.
 The experiments will typically be of the following two kinds -
 
 1. *What* make good filtering criteria - This is what a lot of 'investors' would typically be interested.
@@ -48,7 +48,7 @@ pan11 = pan[cl2.index]
 
 ```
 
-This looked clean. To test this, I had a toy data that I was experimenting with just small data of 20 or so rows (I often use such toy data when iterating over an approach, so that you don't end up spending a lot of time in loading the data itself.) Indeed, this approach is about *20-40 times faster*, based on some simple `time.time()` computation. So the basic intuition is right, it's indeed very fast or Is it?.
+This looked clean. To test this, I had a toy data that I was experimenting with just small data of 20 or so rows (I often use such toy data when iterating over an approach, so that you don't end up spending a lot of time in loading the data itself.) Indeed, this approach is about *20-40 times faster*, based on some simple `time.time()` time delta computation. So the basic intuition is right, it's indeed very fast or Is it?.
 
 While, I have a reasonable working knowledge of `pandas`, I am far from an expert and have only some background in `numpy`. So I did not have an idea about how the particular pieces might be implemented (eg. `transpose` here.). Surely, basic test also suggests, it's worth a try. So now we take the code and run it against 'real data' - about 3000 (about 150 times original data) rows per `DataFrame` in a Panel, and the same code now runs about *3-4 times slower* than the first List Comprehension based approach. Oops! Seriously? First impression in such cases is something else must be wrong. So I started looking at explanations, while the former I was running on my desktop, dedicated CPU and the latter I was running on a VPS, could that be a problem? May be I should eliminate that variable first. So I tried the 'toy data' on the VPS, still the results are about the same. So clearly, something else is wrong.
 

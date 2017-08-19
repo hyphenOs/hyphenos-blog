@@ -8,7 +8,7 @@ Summary: For a beginner, tracing infrastructure in Linux can be considerably con
 
 Note: This is going to start more as a brain-dump and over a period of time, I am going to iterate over this, till it comes in some consumable form.
 
-Most of the Linux dynamic tracing is built around the core support in kernel called `Ftrace`, this started as a function trace sub-system, but is considerably more involved now. All the major tools like [LTTng](), [SystemTap]() or the more recent [BCC]() make use of this infrastructure and then build upon it. In fact some of the kernel developments like `kprobes` and `uprobes` were developed in SystemTap project.
+Most of the Linux dynamic tracing is built around the core support in kernel called `Ftrace`, this started as a function trace sub-system, but is considerably more involved now. All the major tools like [LTTng](https://lttng.org/), [SystemTap](https://sourceware.org/systemtap/) or the more recent [BCC](https://github.com/iovisor/bcc) make use of this infrastructure and then build upon it. In fact some of the kernel developments like `kprobes` and `uprobes` were developed in SystemTap project.
 
 Found a [good presentation](http://events.linuxfoundation.org/images/stories/pdf/lceu2012_zannoni.pdf), that provides a historical perspective of how many of these projects are started. I have also created a [clipboard](https://www.slideshare.net/gabhijit1/clipboards/linux-tracing), that give a timeline of Linux tracing and evolution of BPF support. This helped me understand why some of the utilities in `bcc` won't run on my Ubuntu 16.04 system.
 
@@ -28,5 +28,4 @@ Coming back to specifics - it is possible to 'trace' following -
 
 The recent eBPF has made tracing a lot more interesting. What eBPF essentially allows is adding a code from Userspace to the kernel at the runtime, that can be interfaced with the above `ftrace` mechanism. `bcc` pointed above, has developed a lot of useful tools using this mechanism.
 
-
-
+I will keep updating this article as we go along.

@@ -38,5 +38,10 @@ PYGMENTS_STYLE = 'monokai'
 
 STATIC_PATHS = ['images']
 
+
+MARKDOWN = {'extension_configs':
+                { 'markdown.extensions.extra': {},
+                }
+           }
 # Uncomment following line if you want document-relative URLs when developing
 #RELATIVE_URLS = True
