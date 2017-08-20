@@ -79,6 +79,7 @@ ps.print_callers()
 now0 = time.time()
 
 ```
+
 and for the 'List Comprehension' method -
 
 ```python
