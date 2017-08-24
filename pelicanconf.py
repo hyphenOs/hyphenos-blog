@@ -38,6 +38,7 @@ PYGMENTS_STYLE = 'monokai'
 
 STATIC_PATHS = ['images']
 
+DISQUS_SITENAME = 'hyphenos-github-io'
 
 # Uncomment following line if you want document-relative URLs when developing
 #RELATIVE_URLS = True
